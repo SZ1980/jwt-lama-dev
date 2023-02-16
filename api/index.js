@@ -18,8 +18,15 @@ const users = [
 ];
 
 app.post("/api/login", (req, res) => {
-  // const { username, password } = req.body;
-  res.send("Hey it is working");
+  const { username, password } = req.body;
+  const user = users.find((u) => {
+    return u.username === username && u.password === password;
+  });
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(401).json("username or password incorrect");
+  }
 });
 
 app.listen(5000, () => {
