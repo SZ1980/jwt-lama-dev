@@ -34,10 +34,38 @@ app.post("/api/login", (req, res) => {
       accessToken,
     });
   } else {
-    res.status(401).json("username or password incorrect");
+    res.status(400).json("username or password incorrect");
+  }
+});
+
+const verify = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, "mySecretKey", (err, user) => {
+      if (err) {
+        return res.status(403).json("Token is not valid!");
+      }
+
+      req.user = user;
+      next();
+    });
+  } else {
+    res.status(401).json("You are not authenticated!");
+  }
+};
+
+app.delete("/api/users/:userId", verify, (req, res) => {
+  if (req.user.id === req.params.userId || req.user.isAdmin) {
+    res.status(200).json("User has been deleted.");
+  } else {
+    res.status(403).json("You are not allowed to delete this user!");
   }
 });
 
 app.listen(5000, () => {
   console.log("Backend server is running on port 5000");
 });
+
+// "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NzY1NjA0Nzd9.jMXiK2zPe40Yk0x0ZhgL-1MX-A_DsiWEt98SpPged80"
