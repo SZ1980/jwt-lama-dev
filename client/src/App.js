@@ -1,4 +1,4 @@
-import "./app.css";
+import "./App.css";
 import axios from "axios";
 import { useState } from "react";
 import jwt_decode from "jwt-decode";
@@ -24,7 +24,7 @@ function App() {
     }
   };
 
-  const axiosJWT = axios.create()
+  const axiosJWT = axios.create();
 
   axiosJWT.interceptors.request.use(
     async (config) => {
